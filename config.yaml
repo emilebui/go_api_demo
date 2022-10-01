@@ -7,3 +7,5 @@ GRPC_HOST: "localhost:50051"
 
 # GRPC Gateway
 GATEWAY_ADDR: "0.0.0.0:8082"
+
+SKIP_FILES: [".png", ".jpg", ".jpeg", ".md", ".txt", ".dockerignore", ".gitignore", "Dockerfile", ".mod", ".git"]

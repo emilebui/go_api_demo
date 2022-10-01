@@ -6,9 +6,7 @@ import (
 	"go_api/proto_gen"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"io/ioutil"
 	"os"
-	"path/filepath"
 )
 
 type APIErrorMessage struct {
@@ -19,12 +17,11 @@ type APIErrorMessage struct {
 
 func loadErrorMessages() map[int]APIErrorMessage {
 
-	path, _ := os.Getwd()
-	filename := filepath.Join(FindLoadConfigPath(path), "error_messages.json")
+	filename := GetDirPath("error_messages.json")
 
 	var apiErrorList []APIErrorMessage
 
-	jsonFile, err := ioutil.ReadFile(filename)
+	jsonFile, err := os.ReadFile(filename)
 	ErrorHandler(err)
 
 	err = json.Unmarshal(jsonFile, &apiErrorList)

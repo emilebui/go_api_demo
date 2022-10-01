@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"go_api/helpers"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
 	"os"
-	"path/filepath"
 )
 
 type Config struct {
@@ -18,12 +16,13 @@ type Config struct {
 
 	//GRPC-GATEWAY
 	GatewayAddr string `yaml:"GATEWAY_ADDR"`
+
+	// Skip files config
+	SkipList []string `yaml:"SKIP_FILES"`
 }
 
 func LoadConfigInit() Config {
-
-	path, _ := os.Getwd()
-	filename := filepath.Join(helpers.FindLoadConfigPath(path), "config.yaml")
+	filename := helpers.GetDirPath("config.yaml")
 
 	return LoadConfigLogic(filename)
 }
@@ -31,7 +30,7 @@ func LoadConfigInit() Config {
 func LoadConfigLogic(path string) Config {
 	config := Config{}
 
-	yamlFile, err := ioutil.ReadFile(path)
+	yamlFile, err := os.ReadFile(path)
 	helpers.ErrorHandler(err)
 
 	err = yaml.Unmarshal(yamlFile, &config)

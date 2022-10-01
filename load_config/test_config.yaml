@@ -2,3 +2,5 @@ PORT: "FU"
 
 # Mongo Config
 GRPC_PORT: "FU"
+
+SKIP_FILES: ["blah", "ayaya"]

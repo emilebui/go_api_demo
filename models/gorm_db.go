@@ -2,12 +2,17 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"go_api/helpers"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func initDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	dbFile := helpers.GetDirPath("test.db")
+	db, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -21,6 +26,7 @@ func initDB() *gorm.DB {
 func initRuleDB(db *gorm.DB) {
 	db.Create(&Rule{RuleID: uuid.NewString(), Description: "demo", Severity: "HIGH", StringCompare: "public_key"})
 	db.Create(&Rule{RuleID: uuid.NewString(), Description: "demo", Severity: "HIGH", StringCompare: "private_key"})
+	db.Create(&Rule{RuleID: uuid.NewString(), Description: "demo", Severity: "HIGH", StringCompare: "chosenRocket"})
 }
 
 var DB = initDB()

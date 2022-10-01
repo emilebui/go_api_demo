@@ -1,8 +1,10 @@
 package helpers
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func ErrorHandler(err error) {
@@ -42,4 +44,15 @@ func exists(path string) bool {
 		return false
 	}
 	return false
+}
+
+func GetDirPath(subPath string) string {
+	path, _ := os.Getwd()
+	truePath := filepath.Join(FindLoadConfigPath(path), subPath)
+	return truePath
+}
+
+func GetExtractedPath(key string, path string) string {
+	paths := strings.Split(path, fmt.Sprintf("\\%s\\", key))
+	return paths[1]
 }

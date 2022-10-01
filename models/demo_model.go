@@ -36,6 +36,6 @@ type Rule struct {
 	RuleID          string          `json:"ruleId" gorm:"primaryKey"`
 	Description     string          `json:"description"`
 	Severity        string          `json:"severity"`
-	StringCompare   string          `json:"stringCompare"`
+	StringCompare   string          `json:"stringCompare" gorm:"unique"`
 	Vulnerabilities []Vulnerability `gorm:"constraint:OnDelete:CASCADE;foreignkey:RuleID;references:RuleID"`
 }
