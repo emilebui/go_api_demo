@@ -1,0 +1,9 @@
+# SQL Config
+SQLALCHEMY_DATABASE_URI: ""
+
+# GRPC
+GRPC_PORT: ":50051"
+GRPC_HOST: "localhost:50051"
+
+# GRPC Gateway
+GATEWAY_ADDR: "0.0.0.0:8082"

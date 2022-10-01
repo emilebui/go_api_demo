@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package demo;
+
+option go_package = "/proto/proto_gen";
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+message emptyMessage {}
+
+message errorResponse {
+    int64 code = 1;
+    string message = 2;
+    int64 status_code = 3;
+}
+
+message ResponseMessage {
+    string msg = 1;
+}
+
+message CreateRepoReq {
+    string name = 1 [(validate.rules).string = {
+        pattern:   "^[^[0-9]A-Za-z]+( [^[0-9]A-Za-z]+)*$",
+        max_bytes: 256,
+    }];
+    string url = 2;
+}
+
+message DeleteRepoReq {
+    string name = 1;
+}
+
+message UpdateRepoReq {
+    string name = 1;
+    string url = 2;
+}
+
+message GetRepoReq {
+    string name = 1;
+}
+
+message GetRepoResp {
+    string name = 1;
+    string url = 2;
+}
+
+service Demo {
+    rpc helloWorld(emptyMessage) returns (ResponseMessage) {
+        option (google.api.http) = {
+            get: "/demo/test"
+        };
+    }
+
+    rpc createRepo(CreateRepoReq) returns (ResponseMessage) {
+        option (google.api.http) = {
+            post: "/demo/repo"
+            body: "*"
+        };
+    }
+
+    rpc getRepo(GetRepoReq) returns (GetRepoResp) {
+        option (google.api.http) = {
+            get: "/demo/repo/{name}"
+        };
+    }
+
+    rpc deleteRepo(DeleteRepoReq) returns (ResponseMessage) {
+        option (google.api.http) = {
+            delete: "/demo/repo/{name}"
+        };
+    }
+
+    rpc updateRepo(UpdateRepoReq) returns (ResponseMessage) {
+        option (google.api.http) = {
+            put: "/demo/repo/{name}"
+            body: "*"
+        };
+    }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "code": 400,
+    "message": "blah",
+    "status_code": 4000001
+  },
+  {
+    "code": 400,
+    "message": "%s blah blah %s blah",
+    "status_code": 4000002
+  },
+  {
+    "code": 401,
+    "message" : "%s",
+    "status_code": 4010000
+  },
+  {
+    "code": 409,
+    "message": "%s",
+    "status_code": 4090000
+  }
+]
