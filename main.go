@@ -35,6 +35,9 @@ func runningGRPCServer(config load_config.Config) {
 	s := grpc.NewServer()
 	proto_gen.RegisterDemoServer(s, &service.Server{})
 	log.Printf("server listening at %v\n", lis.Addr())
+	go func() {
+		log.Fatal(s.Serve(lis))
+	}()
 }
 
 func main() {

@@ -1,24 +1,76 @@
-# GO API
+# GO API DEMO
 
+## Introduction
 
+- This is an demo of creating go api using grpc and grpc-gateway
+  - This demo include:
+    - APIs to CRUD repositories
+    - APIs to scan repo and get results
+- This provide both REST API and gRPC API in one code base
+- You can use REST API at port 8082 and gRPC API at port 50051
+- Tech stack: grpc, grpc-gateway, gorm, sqlite, ...
 
+## How to Install/Run
 
-## GRPC Gen Code Cmd
+### Installation
+- Run: `go mod download`
 
-run `cd proto; buf generate`
+### Run the app
+- Run: `go run main.go`
 
-## Run command:
+### Test
+- Run: `go test ./... -cover`
 
-- Server:
-    - `go run main.go`
-- Client:
-    - client_test: `go run client_test/client.go`
-    - benchmark:
-        - grpc_gateway: `go run client_test/benchmark/grpc_gateway/main.go`
-        - pure_grpc: `go run client_test/benchmark/pure_grpc/main.go`
-        - rest: `go run client_test/benchmark/rest/main.go`
-    
-## How to Test
+## Project Structure
 
-- Run Server
-- Then run client_test or benchmark
+- `./main.go`: to run the entire app
+- `service`: contains all the logics to run the app
+- `proto`: contains API contracts (You need to know about gRPC proto-files)
+- `proto_gen`: code that is generated from proto-files (API contract)
+- `models`: contains SQL Schema (ORM structure using GORM)
+- `load_config`: contains modules to load configs
+- `./config.yaml`: overall config of the app
+- `./error_messages.json`: config for error messages format
+- `helpers`: contains all the helper functions to write code
+  - Include: error handlers, path finders, ...
+- `client_test`: contain code to test grpc API
+
+## Features
+- **gRPC API and REST API**
+  - provide both REST API and gRPC API in one code base
+- **Config Management**
+  - Load config from `config.yaml`
+  - Provide singleton config to entire app
+  - Can be overwritten when test
+- **ORM SQL Database**
+  - Creating and Migrating sql database using ORM
+  - Provide singleton database interface to entire app
+  - Can be overwritten when test
+- **Input Validation**
+  - Provide input validation when creating new repo
+    - repo name cannot contain special characters
+- **File extensions White List**
+  - Provide a config to whitelist some file extensions while scanning source code
+    - E.g: file with `.png` will be skipped during scan
+  - Check `./config.yaml` to see the current whitelist
+- **Docker Images**
+  - You can build and run the app with docker images
+  - check `Dockerfile` and `docker-compose.yml`
+- **Error Message Format**
+  - Provide a config to define error message format
+  - Provide error message interface to return error message format from the config
+
+## Working with source code
+
+### Prerequisite
+
+- Understanding of grpc and grpc-gatway, documents can be found here:
+  - https://grpc.io/docs/
+  - https://github.com/grpc-ecosystem/grpc-gateway
+- Install these packages:
+  - https://github.com/grpc-ecosystem/grpc-gateway
+  - buf.build
+  - https://github.com/envoyproxy/protoc-gen-validate
+
+### GRPC Code Gen Cmd
+- `cd proto; buf generate`
