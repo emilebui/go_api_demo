@@ -21,6 +21,7 @@ type Config struct {
 	SkipList []string `yaml:"SKIP_FILES"`
 }
 
+// LoadConfigInit Initialize config from `config.yaml`
 func LoadConfigInit() Config {
 	filename := helpers.GetDirPath("config.yaml")
 

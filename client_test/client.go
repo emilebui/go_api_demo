@@ -17,12 +17,14 @@ func GRPCReqHandling(ctx context.Context, s proto_gen.DemoClient) {
 }
 
 func main() {
+	// Create gRPC connection from client to server
 	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	c := proto_gen.NewDemoClient(conn)
-	// GRPC benchmark
+
+	// Test GRPC API
 	GRPCReqHandling(context.Background(), c)
 }

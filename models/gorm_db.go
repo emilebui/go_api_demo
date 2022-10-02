@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+// initDB Init DB object logic (for singleton DB)
 func initDB() *gorm.DB {
 	dbFile := helpers.GetDirPath("test.db")
 	db, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{
@@ -23,12 +24,13 @@ func initDB() *gorm.DB {
 	return db
 }
 
+// initRuleDB Create initial rules to scan
 func initRuleDB(db *gorm.DB) {
 	db.Create(&Rule{ID: uuid.NewString(), Description: "repo", Severity: "HIGH", StringCompare: "public_key"})
 	db.Create(&Rule{ID: uuid.NewString(), Description: "repo", Severity: "HIGH", StringCompare: "private_key"})
-	db.Create(&Rule{ID: uuid.NewString(), Description: "repo", Severity: "HIGH", StringCompare: "chosenRocket"})
 }
 
+// InitTestDB Init Test DB
 func InitTestDB() *gorm.DB {
 	cxn := "file::memory:?cache=shared"
 	db, err := gorm.Open(sqlite.Open(cxn), &gorm.Config{
@@ -41,6 +43,7 @@ func InitTestDB() *gorm.DB {
 	return db
 }
 
+// initTestData Init Test DB Data
 func initTestData(db *gorm.DB) {
 	db.Migrator().DropTable(&Repo{})
 	db.Migrator().DropTable(&Rule{})
@@ -59,4 +62,5 @@ func initTestData(db *gorm.DB) {
 	})
 }
 
+// DB Singleton DB object for entire app to use
 var DB = initDB()

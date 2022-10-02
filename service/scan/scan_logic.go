@@ -17,6 +17,7 @@ import (
 	"time"
 )
 
+// InitScan Init Scan functions
 func InitScan(in *proto_gen.ScanTriggerReq) error {
 	repoName := in.Name
 	var repo models.Repo
@@ -43,6 +44,7 @@ func InitScanLogic(repo models.Repo) {
 
 }
 
+// startScanning Begin to Scan
 func startScanning(result *models.Result) {
 
 	result.Status = "In Progress"
@@ -67,12 +69,14 @@ func startScanning(result *models.Result) {
 	models.DB.Save(result)
 }
 
+// UpdateResultIfError Error Handler
 func UpdateResultIfError(result *models.Result, err error) {
 	result.Status = "Failure"
 	result.ErrorLog = err.Error()
 	models.DB.Save(&result)
 }
 
+// DownloadRepo Download Repo to Scan
 func DownloadRepo(result *models.Result) (string, error) {
 	path := helpers.GetDirPath(fmt.Sprintf("temp/%s", result.Id))
 	err := os.MkdirAll(path, os.ModePerm)
@@ -85,6 +89,7 @@ func DownloadRepo(result *models.Result) (string, error) {
 	return path, err
 }
 
+// NotInIgnoreSet Checks if file/dir is in the ignore list
 func NotInIgnoreSet(path string) bool {
 	for _, s := range load_config.Conf.SkipList {
 		if strings.HasSuffix(path, s) {
@@ -95,8 +100,12 @@ func NotInIgnoreSet(path string) bool {
 	return true
 }
 
+// ScanRepo Scan a repo
 func ScanRepo(path string, result *models.Result) error {
 	var wg sync.WaitGroup
+
+	// Walk through every file in the repo path to scan
+	// If file is valid (not in ignore-list), create a go-routine to scan (optimization)
 	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() && !NotInIgnoreSet(info.Name()) {
 			return filepath.SkipDir
@@ -117,6 +126,7 @@ func ScanRepo(path string, result *models.Result) error {
 	return err
 }
 
+// ScanLogic Scan a file by scanning every lines to see if lines contain dangerous words
 func ScanLogic(path string, result *models.Result) error {
 
 	file, err := os.Open(path)
@@ -160,6 +170,7 @@ func ScanLogic(path string, result *models.Result) error {
 	return nil
 }
 
+// GetResults Return scan results for a repo
 func GetResults(in *proto_gen.GetScanResultReq) (*proto_gen.GetScanResultResp, error) {
 
 	repoName := in.Name

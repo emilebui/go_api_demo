@@ -15,6 +15,7 @@ type APIErrorMessage struct {
 	StatusCode int    `json:"status_code"`
 }
 
+// loadErrorMessages Load Error Message Format from `./error_messages.json`
 func loadErrorMessages() map[int]APIErrorMessage {
 
 	filename := GetDirPath("error_messages.json")
@@ -37,8 +38,10 @@ func loadErrorMessages() map[int]APIErrorMessage {
 	return APIErrorMap
 }
 
+// APIErrorMap Create singleton config for entire app to use
 var APIErrorMap = loadErrorMessages()
 
+// HttpCode2GrpcCode Convert HTTP Status Code to GRPC Status Code
 func HttpCode2GrpcCode(code int) codes.Code {
 	switch code {
 	case 400:
@@ -64,6 +67,7 @@ func HttpCode2GrpcCode(code int) codes.Code {
 	}
 }
 
+// Error Returns grpc error with error message format from the config
 func Error(c int) error {
 	apiError, ok := APIErrorMap[c]
 	if !ok {
@@ -85,6 +89,7 @@ func Error(c int) error {
 	return errorStatus.Err()
 }
 
+// Errorf Returns grpc error with error message format from the config with string modification
 func Errorf(c int, a ...interface{}) error {
 	apiError, ok := APIErrorMap[c]
 	if !ok {
