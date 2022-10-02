@@ -1,4 +1,4 @@
-package demo
+package repo
 
 import (
 	"go_api/models"
@@ -21,6 +21,7 @@ func CreateRepoLogic(input *proto_gen.CreateRepoReq) error {
 func DeleteRepoLogic(input *proto_gen.DeleteRepoReq) error {
 	var repo models.Repo
 	res := models.DB.Where("name = ?", input.Name).Delete(&repo)
+	println()
 	return res.Error
 }
 

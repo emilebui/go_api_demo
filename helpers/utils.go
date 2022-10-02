@@ -32,10 +32,10 @@ func FindLoadConfigPath(path string) string {
 
 func checkIfLoadConfigExist(path string) bool {
 	temp := filepath.Join(path, "load_config")
-	return exists(temp)
+	return ExistsPath(temp)
 }
 
-func exists(path string) bool {
+func ExistsPath(path string) bool {
 	_, err := os.Stat(path)
 	if err == nil {
 		return true

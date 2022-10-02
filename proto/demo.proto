@@ -21,7 +21,7 @@ message ResponseMessage {
 
 message CreateRepoReq {
     string name = 1 [(validate.rules).string = {
-        pattern:   "^[^[0-9]A-Za-z]+( [^[0-9]A-Za-z]+)*$",
+        pattern:   "^[a-zA-Z0-9]{1,100}$",
         max_bytes: 256,
     }];
     string url = 2;
@@ -45,36 +45,87 @@ message GetRepoResp {
     string url = 2;
 }
 
+message ScanTriggerReq {
+    string name = 1;
+}
+
+message GetScanResultReq {
+    string name = 1;
+}
+
+message Vulnerability {
+    string type = 1;
+    string rule_id = 2;
+    Location location = 3;
+    MetaData metadata = 4;
+    message Location {
+        string path = 1;
+        int32 line = 2;
+    }
+    message MetaData {
+        string description = 1;
+        string severity = 2;
+    }
+}
+
+message Result {
+    string id = 1;
+    string status = 2;
+    string repo_name = 3;
+    string repo_url = 4;
+    repeated Vulnerability findings = 5;
+    int64 queue_at = 6;
+    int64 scanning_at = 7;
+    int64 finished_at = 8;
+}
+
+message GetScanResultResp {
+    repeated Result data = 1;
+}
+
+
 service Demo {
     rpc helloWorld(emptyMessage) returns (ResponseMessage) {
         option (google.api.http) = {
-            get: "/demo/test"
+            get: "/v1/test"
         };
     }
 
     rpc createRepo(CreateRepoReq) returns (ResponseMessage) {
         option (google.api.http) = {
-            post: "/demo/repo"
+            post: "/v1/repo"
             body: "*"
         };
     }
 
     rpc getRepo(GetRepoReq) returns (GetRepoResp) {
         option (google.api.http) = {
-            get: "/demo/repo/{name}"
+            get: "/v1/repo/{name}"
         };
     }
 
     rpc deleteRepo(DeleteRepoReq) returns (ResponseMessage) {
         option (google.api.http) = {
-            delete: "/demo/repo/{name}"
+            delete: "/v1/repo/{name}"
         };
     }
 
     rpc updateRepo(UpdateRepoReq) returns (ResponseMessage) {
         option (google.api.http) = {
-            put: "/demo/repo/{name}"
+            put: "/v1/repo/{name}"
             body: "*"
+        };
+    }
+
+    rpc triggerScan(ScanTriggerReq) returns (ResponseMessage) {
+        option (google.api.http) = {
+            get: "/v1/repo/trigger/{name}"
+        };
+    }
+
+    rpc getScanResults(GetScanResultReq) returns (GetScanResultResp) {
+        option (google.api.http) = {
+            get: "/v1/repo/results/{name}"
         };
     }
 }

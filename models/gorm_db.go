@@ -24,9 +24,39 @@ func initDB() *gorm.DB {
 }
 
 func initRuleDB(db *gorm.DB) {
-	db.Create(&Rule{RuleID: uuid.NewString(), Description: "demo", Severity: "HIGH", StringCompare: "public_key"})
-	db.Create(&Rule{RuleID: uuid.NewString(), Description: "demo", Severity: "HIGH", StringCompare: "private_key"})
-	db.Create(&Rule{RuleID: uuid.NewString(), Description: "demo", Severity: "HIGH", StringCompare: "chosenRocket"})
+	db.Create(&Rule{ID: uuid.NewString(), Description: "repo", Severity: "HIGH", StringCompare: "public_key"})
+	db.Create(&Rule{ID: uuid.NewString(), Description: "repo", Severity: "HIGH", StringCompare: "private_key"})
+	db.Create(&Rule{ID: uuid.NewString(), Description: "repo", Severity: "HIGH", StringCompare: "chosenRocket"})
+}
+
+func InitTestDB() *gorm.DB {
+	cxn := "file::memory:?cache=shared"
+	db, err := gorm.Open(sqlite.Open(cxn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	initTestData(db)
+	return db
+}
+
+func initTestData(db *gorm.DB) {
+	db.Migrator().DropTable(&Repo{})
+	db.Migrator().DropTable(&Rule{})
+	db.Migrator().DropTable(&Result{})
+	db.Migrator().DropTable(&Vulnerability{})
+	db.AutoMigrate(&Repo{}, &Rule{}, &Result{}, &Vulnerability{})
+	db.Create(&Repo{Name: "test", Url: "https://github.com/emilebui/Minigames-on-Processing"})
+	db.Create(&Rule{ID: "test", Description: "repo", Severity: "HIGH", StringCompare: "chosenRocket"})
+	db.Create(&Result{
+		Id: "test", Status: "Success", RepositoryName: "test",
+		RepositoryUrl: "https://github.com/emilebui/Minigames-on-Processing",
+		QueuedAt:      1, ScanningAt: 1, FinishedAt: 2,
+	})
+	db.Create(&Vulnerability{
+		ID: "test", ResultID: "test", Type: "sast", RuleID: "test", Path: "blah", Line: 12,
+	})
 }
 
 var DB = initDB()

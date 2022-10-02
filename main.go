@@ -5,7 +5,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go_api/load_config"
 	"go_api/proto_gen"
-	"go_api/service/demo"
+	"go_api/service"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -18,7 +18,7 @@ func runningGRPCGateWay(config load_config.Config) {
 	defer cancel()
 
 	mux := runtime.NewServeMux()
-	err := proto_gen.RegisterDemoHandlerServer(context.Background(), mux, &demo.Server{})
+	err := proto_gen.RegisterDemoHandlerServer(context.Background(), mux, &service.Server{})
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +33,7 @@ func runningGRPCServer(config load_config.Config) {
 	}
 
 	s := grpc.NewServer()
-	proto_gen.RegisterDemoServer(s, &demo.Server{})
+	proto_gen.RegisterDemoServer(s, &service.Server{})
 	log.Printf("server listening at %v\n", lis.Addr())
 }
 
