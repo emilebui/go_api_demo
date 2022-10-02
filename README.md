@@ -21,6 +21,11 @@
 ### Test
 - Run: `go test ./... -cover`
 
+### API Documentations
+- You can view `./swagger.yaml` or check this link:
+  - https://app.swaggerhub.com/apis-docs/emilebui/go_demo/1.0.0
+- For gRPC API, checkout [**proto/demo.proto**](./proto/demo.proto) to see the API contract
+
 ## Project Structure
 
 - `./main.go`: to run the entire app

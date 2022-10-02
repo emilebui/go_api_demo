@@ -1,0 +1,244 @@
+swagger: '2.0'
+info:
+  description: This is a simple API
+  version: "1.0.0"
+  title: gRPC-Gateway Demo API
+tags:
+  - name: Demo
+  - name: Repo
+  - name: Scan
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/repo:
+    post:
+      operationId: Demo_createRepo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoResponseMessage'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/demoCreateRepoReq'
+      tags:
+        - Repo
+  /v1/repo/results/{name}:
+    get:
+      operationId: Demo_getScanResults
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoGetScanResultResp'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+      tags:
+        - Scan
+  /v1/repo/trigger/{name}:
+    get:
+      operationId: Demo_triggerScan
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoResponseMessage'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+      tags:
+        - Scan
+  /v1/repo/{name}:
+    get:
+      operationId: Demo_getRepo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoGetRepoResp'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+      tags:
+        - Repo
+    delete:
+      operationId: Demo_deleteRepo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoResponseMessage'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+      tags:
+        - Repo
+    put:
+      operationId: Demo_updateRepo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoResponseMessage'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+      tags:
+        - Repo
+  /v1/test:
+    get:
+      operationId: Demo_helloWorld
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoResponseMessage'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - Demo
+definitions:
+  VulnerabilityMetaData:
+    type: object
+    properties:
+      description:
+        type: string
+      severity:
+        type: string
+  demoCreateRepoReq:
+    type: object
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+  demoGetRepoResp:
+    type: object
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+  demoGetScanResultResp:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/demoResult'
+  demoResponseMessage:
+    type: object
+    properties:
+      msg:
+        type: string
+  demoResult:
+    type: object
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+      repoName:
+        type: string
+      repoUrl:
+        type: string
+      findings:
+        type: array
+        items:
+          $ref: '#/definitions/demoVulnerability'
+      queueAt:
+        type: string
+        format: int64
+      scanningAt:
+        type: string
+        format: int64
+      finishedAt:
+        type: string
+        format: int64
+  demoVulnerability:
+    type: object
+    properties:
+      type:
+        type: string
+      ruleId:
+        type: string
+      location:
+        $ref: '#/definitions/demoVulnerabilityLocation'
+      metadata:
+        $ref: '#/definitions/VulnerabilityMetaData'
+  demoVulnerabilityLocation:
+    type: object
+    properties:
+      path:
+        type: string
+      line:
+        type: integer
+        format: int32
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/protobufAny'
