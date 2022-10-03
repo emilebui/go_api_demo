@@ -6,6 +6,7 @@
   - This demo include:
     - APIs to CRUD repositories
     - APIs to scan repo and get results
+    - API to CRUD scanning rules
 - This provide both REST API and gRPC API in one code base
 - You can use REST API at port 8082 and gRPC API at port 50051
 - Tech stack: grpc, grpc-gateway, gorm, sqlite, ...
@@ -83,3 +84,12 @@
 
 ### GRPC Code Gen Cmd
 - `cd proto; buf generate`
+
+### ORM Data Structure
+- ORM data structure can be found in [**demo_model.go**](./models/demo_model.go)
+- Structure Details:
+  - Repo: Table for repository
+  - Rule: Table for scanning rule
+    - `Rule.StringCompare`: vulnerable keyword to check while scanning
+  - Result: Table for scanning result
+  - Vulnerability: A vulnerability that is found while scanning
