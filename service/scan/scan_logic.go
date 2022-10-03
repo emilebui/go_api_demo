@@ -161,7 +161,6 @@ func ScanLogic(path string, result *models.Result) error {
 				if res.Error != nil {
 					return err
 				}
-				fmt.Printf("%s - Line %d\n", helpers.GetExtractedPath(result.Id, path), lineNum)
 			}
 		}
 		lineNum++
