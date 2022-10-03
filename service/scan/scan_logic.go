@@ -17,6 +17,20 @@ import (
 	"time"
 )
 
+/*
+-------------------------------------SCAN-LOGIC-DOCUMENT-----------------------------------
+The entire scanning process works as follows:
+	- Step 1: Create a Result obj, init an `ResultID` using uuid
+	- Step 2: Download the repo into a newly-created folder named after `ResultID`
+	- Step 3: Loop through every file in the download folder and do as follows
+		- Skip file if it is in the Whitelist
+		- Open a go-routine to scan the file
+	- Scan file logic:
+		- Read file line by line
+		- Check if line contains keyword from Rule table
+___________________________________________________________________________________________
+*/
+
 // InitScan Init Scan functions
 func InitScan(in *proto_gen.ScanTriggerReq) error {
 	repoName := in.Name

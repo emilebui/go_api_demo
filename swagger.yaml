@@ -161,7 +161,7 @@ paths:
           schema:
             $ref: '#/definitions/rpcStatus'
       tags:
-        - repo
+        - Repo
   /v1/rule:
     post:
       summary: "Add a rule"
@@ -385,7 +385,12 @@ definitions:
     properties:
       '@type':
         type: string
-    additionalProperties: {}
+      code:
+        type: integer
+      message:
+        type: string
+      status_code:
+        type: integer
   rpcStatus:
     type: object
     properties:
