@@ -18,6 +18,11 @@ func initDB() *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
+	sqlDb, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	sqlDb.SetMaxOpenConns(1)
 
 	db.AutoMigrate(&Repo{}, &Rule{}, &Result{}, &Vulnerability{})
 	initRuleDB(db)
