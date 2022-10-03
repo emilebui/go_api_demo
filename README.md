@@ -21,6 +21,10 @@
 ### Test
 - Run: `go test ./... -cover`
 
+### Docker
+- Build: `docker build -t go_api:dev .`
+- Build and Run: `docker-compose up -d`
+
 ### API Documentations
 - You can view `./swagger.yaml` or check this link:
   - https://app.swaggerhub.com/apis-docs/emilebui/go_demo/1.0.0
