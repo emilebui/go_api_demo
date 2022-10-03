@@ -67,6 +67,7 @@ func startScanning(result *models.Result) {
 	result.Status = "Success"
 	result.FinishedAt = time.Now().Unix()
 	models.DB.Save(result)
+	os.RemoveAll(path)
 }
 
 // UpdateResultIfError Error Handler
