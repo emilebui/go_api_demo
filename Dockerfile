@@ -4,24 +4,18 @@ ARG app_name=app
 RUN mkdir -p /opt/${app_name}
 ADD ./go.mod /opt/${app_name}
 ADD ./go.sum /opt/${app_name}
-ADD ca-certificates.crt /etc/ssl/certs/
-
-RUN apk add build-base
 
 WORKDIR /opt/${app_name}
 
-ENV http_proxy=http://192.168.5.8:3128
-ENV https_proxy=http://192.168.5.8:3128
-
 ADD ./main.go /opt/${app_name}
-ADD ./db_conn /opt/${app_name}/db_conn
 ADD ./helpers /opt/${app_name}/helpers
 ADD ./load_config /opt/${app_name}/load_config
-ADD ./logging /opt/${app_name}/logging
 ADD ./models /opt/${app_name}/models
 ADD ./proto /opt/${app_name}/proto
 ADD ./proto_gen /opt/${app_name}/proto_gen
 ADD ./service /opt/${app_name}/service
+ADD ./config.yaml /opt/${app_name}
+ADD ./error_messages.json /opt/${app_name}
 
 RUN go mod download && \
 unset http_proxy && \
@@ -34,10 +28,12 @@ ARG app_name=app
 ENV TZ=Asia/Ho_Chi_Minh
 
 WORKDIR /app/go_api_demo
-COPY --from=0 /opt/${app_name}/go_app /app/go_api_demo/go_app
-COPY --from=0 /opt/${app_name}/load_config/error_messages.json /app/go_api_demo/load_config/error_messages.json
-COPY --from=0 /opt/${app_name}/load_config/config.yaml /app/go_api_demo/load_config/config.yaml
 
+COPY --from=0 /opt/${app_name}/go_app /app/go_api_demo/go_app
+COPY --from=0 /opt/${app_name}/error_messages.json /app/go_api_demo/error_messages.json
+COPY --from=0 /opt/${app_name}/config.yaml /app/go_api_demo/config.yaml
+
+RUN mkdir -p /app/go_api_demo/load_config
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 CMD ["/app/go_api_demo/go_app"]

@@ -4,8 +4,9 @@ services:
   go_api_demo:
     container_name: go_api_demo
     image: go_api:dev
+    build: .
     volumes:
-      - ./load_config/config.yaml:/app/go_api_demo/load_config/config.yaml
+      - ./config.yaml:/app/go_api_demo/config.yaml
     ports:
       - 8080:8080
       - 8082:8082

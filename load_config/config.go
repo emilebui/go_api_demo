@@ -8,9 +8,6 @@ import (
 )
 
 type Config struct {
-	// SQL Config
-	SqlURI string `yaml:"SQLALCHEMY_DATABASE_URI"`
-
 	//GRPC
 	GrpcPort string `yaml:"GRPC_PORT"`
 

@@ -1,9 +1,10 @@
 package models
 
 import (
+	"github.com/glebarez/sqlite"
 	"github.com/google/uuid"
+	_ "github.com/mattn/go-sqlite3"
 	"go_api/helpers"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
