@@ -7,6 +7,7 @@ tags:
   - name: Demo
   - name: Repo
   - name: Scan
+  - name: Rule
 consumes:
   - application/json
 produces:
@@ -145,6 +146,113 @@ paths:
                 type: string
       tags:
         - Repo
+  /v1/repo/all:
+    get:
+      summary: "Retrieve all repos"
+      description: "API to retrive information of every repository"
+      operationId: Demo_getAllRepo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoGetAllRepoRes'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - repo
+  /v1/rule:
+    post:
+      summary: "Add a rule"
+      description: "API to create a scanning rule"
+      operationId: Demo_addRule
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoResponseMessage'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/demoAddRule'
+      tags:
+        - Rule
+  /v1/rule/all:
+    get:
+      summary: "Retrieve all rules"
+      description: "API to retrive information of every rule"
+      operationId: Demo_getAllRules
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoGetAllRulesRes'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - Rule
+  /v1/rule/{id}:
+    delete:
+      summary: "Delete a rule"
+      description: "API to delete a scanning rule"
+      operationId: Demo_deleteRule
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoResponseMessage'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Rule
+    put:
+      summary: "Edit a rule"
+      description: "API to edit a scanning rule"
+      operationId: Demo_editRule
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/demoResponseMessage'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              description:
+                type: string
+              severity:
+                type: string
+              stringCompare:
+                type: string
+      tags:
+        - Rule
   /v1/test:
     get:
       summary: "Ping"
@@ -169,6 +277,15 @@ definitions:
         type: string
       severity:
         type: string
+  demoAddRule:
+    type: object
+    properties:
+      description:
+        type: string
+      severity:
+        type: string
+      stringCompare:
+        type: string
   demoCreateRepoReq:
     type: object
     properties:
@@ -176,6 +293,20 @@ definitions:
         type: string
       url:
         type: string
+  demoGetAllRepoRes:
+    type: object
+    properties:
+      repositories:
+        type: array
+        items:
+          $ref: '#/definitions/demoGetRepoResp'
+  demoGetAllRulesRes:
+    type: object
+    properties:
+      rules:
+        type: array
+        items:
+          $ref: '#/definitions/demoRule'
   demoGetRepoResp:
     type: object
     properties:
@@ -219,6 +350,17 @@ definitions:
       finishedAt:
         type: string
         format: int64
+  demoRule:
+    type: object
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      severity:
+        type: string
+      stringCompare:
+        type: string
   demoVulnerability:
     type: object
     properties:
