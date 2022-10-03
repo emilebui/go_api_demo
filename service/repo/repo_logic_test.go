@@ -91,3 +91,13 @@ func TestUpdateRepoLogic(t *testing.T) {
 		t.Fatalf("fail in logic")
 	}
 }
+
+func TestGetAllRepoLogic(t *testing.T) {
+	models.DB = models.InitTestDB()
+
+	res, err := GetAllRepoLogic()
+	if err != nil {
+		t.Fatalf("fail in logic")
+	}
+	tests.AssertEqual(t, len(res.Repositories), 1)
+}

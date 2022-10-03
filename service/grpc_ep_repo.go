@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"go_api/helpers"
 	"go_api/proto_gen"
 	"go_api/service/repo"
@@ -23,8 +22,6 @@ func (s *Server) CreateRepo(_ context.Context, in *proto_gen.CreateRepoReq) (*pr
 	if err != nil {
 		return nil, helpers.Errorf(4090000, err.Error())
 	}
-
-	fmt.Printf("%s - %s\n", in.Name, in.Url)
 
 	err = repo.CreateRepoLogic(in)
 	if err != nil {
@@ -61,4 +58,12 @@ func (s *Server) GetRepo(_ context.Context, in *proto_gen.GetRepoReq) (*proto_ge
 		return nil, helpers.Errorf(4090000, err.Error())
 	}
 	return &result, nil
+}
+
+func (s *Server) GetAllRepo(_ context.Context, _ *proto_gen.EmptyMessage) (*proto_gen.GetAllRepoRes, error) {
+	res, err := repo.GetAllRepoLogic()
+	if err != nil {
+		return nil, helpers.Errorf(4090000, err.Error())
+	}
+	return res, nil
 }

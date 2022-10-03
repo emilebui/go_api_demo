@@ -25,10 +25,15 @@ type DemoClient interface {
 	HelloWorld(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*ResponseMessage, error)
 	CreateRepo(ctx context.Context, in *CreateRepoReq, opts ...grpc.CallOption) (*ResponseMessage, error)
 	GetRepo(ctx context.Context, in *GetRepoReq, opts ...grpc.CallOption) (*GetRepoResp, error)
+	GetAllRepo(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*GetAllRepoRes, error)
 	DeleteRepo(ctx context.Context, in *DeleteRepoReq, opts ...grpc.CallOption) (*ResponseMessage, error)
 	UpdateRepo(ctx context.Context, in *UpdateRepoReq, opts ...grpc.CallOption) (*ResponseMessage, error)
 	TriggerScan(ctx context.Context, in *ScanTriggerReq, opts ...grpc.CallOption) (*ResponseMessage, error)
 	GetScanResults(ctx context.Context, in *GetScanResultReq, opts ...grpc.CallOption) (*GetScanResultResp, error)
+	AddRule(ctx context.Context, in *AddRule, opts ...grpc.CallOption) (*ResponseMessage, error)
+	DeleteRule(ctx context.Context, in *DeleteRuleReq, opts ...grpc.CallOption) (*ResponseMessage, error)
+	EditRule(ctx context.Context, in *Rule, opts ...grpc.CallOption) (*ResponseMessage, error)
+	GetAllRules(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*GetAllRulesRes, error)
 }
 
 type demoClient struct {
@@ -60,6 +65,15 @@ func (c *demoClient) CreateRepo(ctx context.Context, in *CreateRepoReq, opts ...
 func (c *demoClient) GetRepo(ctx context.Context, in *GetRepoReq, opts ...grpc.CallOption) (*GetRepoResp, error) {
 	out := new(GetRepoResp)
 	err := c.cc.Invoke(ctx, "/demo.Demo/getRepo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *demoClient) GetAllRepo(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*GetAllRepoRes, error) {
+	out := new(GetAllRepoRes)
+	err := c.cc.Invoke(ctx, "/demo.Demo/getAllRepo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -102,6 +116,42 @@ func (c *demoClient) GetScanResults(ctx context.Context, in *GetScanResultReq, o
 	return out, nil
 }
 
+func (c *demoClient) AddRule(ctx context.Context, in *AddRule, opts ...grpc.CallOption) (*ResponseMessage, error) {
+	out := new(ResponseMessage)
+	err := c.cc.Invoke(ctx, "/demo.Demo/addRule", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *demoClient) DeleteRule(ctx context.Context, in *DeleteRuleReq, opts ...grpc.CallOption) (*ResponseMessage, error) {
+	out := new(ResponseMessage)
+	err := c.cc.Invoke(ctx, "/demo.Demo/deleteRule", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *demoClient) EditRule(ctx context.Context, in *Rule, opts ...grpc.CallOption) (*ResponseMessage, error) {
+	out := new(ResponseMessage)
+	err := c.cc.Invoke(ctx, "/demo.Demo/editRule", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *demoClient) GetAllRules(ctx context.Context, in *EmptyMessage, opts ...grpc.CallOption) (*GetAllRulesRes, error) {
+	out := new(GetAllRulesRes)
+	err := c.cc.Invoke(ctx, "/demo.Demo/getAllRules", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DemoServer is the server API for Demo service.
 // All implementations must embed UnimplementedDemoServer
 // for forward compatibility
@@ -109,10 +159,15 @@ type DemoServer interface {
 	HelloWorld(context.Context, *EmptyMessage) (*ResponseMessage, error)
 	CreateRepo(context.Context, *CreateRepoReq) (*ResponseMessage, error)
 	GetRepo(context.Context, *GetRepoReq) (*GetRepoResp, error)
+	GetAllRepo(context.Context, *EmptyMessage) (*GetAllRepoRes, error)
 	DeleteRepo(context.Context, *DeleteRepoReq) (*ResponseMessage, error)
 	UpdateRepo(context.Context, *UpdateRepoReq) (*ResponseMessage, error)
 	TriggerScan(context.Context, *ScanTriggerReq) (*ResponseMessage, error)
 	GetScanResults(context.Context, *GetScanResultReq) (*GetScanResultResp, error)
+	AddRule(context.Context, *AddRule) (*ResponseMessage, error)
+	DeleteRule(context.Context, *DeleteRuleReq) (*ResponseMessage, error)
+	EditRule(context.Context, *Rule) (*ResponseMessage, error)
+	GetAllRules(context.Context, *EmptyMessage) (*GetAllRulesRes, error)
 	mustEmbedUnimplementedDemoServer()
 }
 
@@ -129,6 +184,9 @@ func (UnimplementedDemoServer) CreateRepo(context.Context, *CreateRepoReq) (*Res
 func (UnimplementedDemoServer) GetRepo(context.Context, *GetRepoReq) (*GetRepoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRepo not implemented")
 }
+func (UnimplementedDemoServer) GetAllRepo(context.Context, *EmptyMessage) (*GetAllRepoRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllRepo not implemented")
+}
 func (UnimplementedDemoServer) DeleteRepo(context.Context, *DeleteRepoReq) (*ResponseMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRepo not implemented")
 }
@@ -140,6 +198,18 @@ func (UnimplementedDemoServer) TriggerScan(context.Context, *ScanTriggerReq) (*R
 }
 func (UnimplementedDemoServer) GetScanResults(context.Context, *GetScanResultReq) (*GetScanResultResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetScanResults not implemented")
+}
+func (UnimplementedDemoServer) AddRule(context.Context, *AddRule) (*ResponseMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddRule not implemented")
+}
+func (UnimplementedDemoServer) DeleteRule(context.Context, *DeleteRuleReq) (*ResponseMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRule not implemented")
+}
+func (UnimplementedDemoServer) EditRule(context.Context, *Rule) (*ResponseMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditRule not implemented")
+}
+func (UnimplementedDemoServer) GetAllRules(context.Context, *EmptyMessage) (*GetAllRulesRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllRules not implemented")
 }
 func (UnimplementedDemoServer) mustEmbedUnimplementedDemoServer() {}
 
@@ -204,6 +274,24 @@ func _Demo_GetRepo_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DemoServer).GetRepo(ctx, req.(*GetRepoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Demo_GetAllRepo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServer).GetAllRepo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/demo.Demo/getAllRepo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServer).GetAllRepo(ctx, req.(*EmptyMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -280,6 +368,78 @@ func _Demo_GetScanResults_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Demo_AddRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddRule)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServer).AddRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/demo.Demo/addRule",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServer).AddRule(ctx, req.(*AddRule))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Demo_DeleteRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRuleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServer).DeleteRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/demo.Demo/deleteRule",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServer).DeleteRule(ctx, req.(*DeleteRuleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Demo_EditRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Rule)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServer).EditRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/demo.Demo/editRule",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServer).EditRule(ctx, req.(*Rule))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Demo_GetAllRules_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServer).GetAllRules(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/demo.Demo/getAllRules",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServer).GetAllRules(ctx, req.(*EmptyMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Demo_ServiceDesc is the grpc.ServiceDesc for Demo service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -300,6 +460,10 @@ var Demo_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Demo_GetRepo_Handler,
 		},
 		{
+			MethodName: "getAllRepo",
+			Handler:    _Demo_GetAllRepo_Handler,
+		},
+		{
 			MethodName: "deleteRepo",
 			Handler:    _Demo_DeleteRepo_Handler,
 		},
@@ -314,6 +478,22 @@ var Demo_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getScanResults",
 			Handler:    _Demo_GetScanResults_Handler,
+		},
+		{
+			MethodName: "addRule",
+			Handler:    _Demo_AddRule_Handler,
+		},
+		{
+			MethodName: "deleteRule",
+			Handler:    _Demo_DeleteRule_Handler,
+		},
+		{
+			MethodName: "editRule",
+			Handler:    _Demo_EditRule_Handler,
+		},
+		{
+			MethodName: "getAllRules",
+			Handler:    _Demo_GetAllRules_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

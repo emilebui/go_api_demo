@@ -83,6 +83,30 @@ message GetScanResultResp {
     repeated Result data = 1;
 }
 
+message GetAllRepoRes {
+    repeated GetRepoResp repositories = 1;
+}
+
+message AddRule {
+    string description = 1;
+    string severity = 2;
+    string stringCompare = 3;
+}
+
+message Rule {
+    string id = 1;
+    string description = 2;
+    string severity = 3;
+    string stringCompare = 4;
+}
+
+message GetAllRulesRes {
+    repeated Rule rules = 1;
+}
+
+message DeleteRuleReq {
+    string id = 1;
+}
 
 service Demo {
     rpc helloWorld(emptyMessage) returns (ResponseMessage) {
@@ -101,6 +125,12 @@ service Demo {
     rpc getRepo(GetRepoReq) returns (GetRepoResp) {
         option (google.api.http) = {
             get: "/v1/repo/{name}"
+        };
+    }
+
+    rpc getAllRepo(emptyMessage) returns (GetAllRepoRes) {
+        option (google.api.http) = {
+            get: "/v1/repo/all"
         };
     }
 
@@ -126,6 +156,32 @@ service Demo {
     rpc getScanResults(GetScanResultReq) returns (GetScanResultResp) {
         option (google.api.http) = {
             get: "/v1/repo/results/{name}"
+        };
+    }
+
+    rpc addRule(AddRule) returns (ResponseMessage) {
+        option (google.api.http) = {
+            post: "/v1/rule"
+            body: "*"
+        };
+    }
+
+    rpc deleteRule(DeleteRuleReq) returns (ResponseMessage) {
+        option (google.api.http) = {
+            delete: "/v1/rule/{id}"
+        };
+    }
+
+    rpc editRule(Rule) returns (ResponseMessage) {
+        option (google.api.http) = {
+            put: "/v1/rule/{id}"
+            body: "*"
+        };
+    }
+
+    rpc getAllRules(emptyMessage) returns (GetAllRulesRes) {
+        option (google.api.http) = {
+            get: "/v1/rule/all"
         };
     }
 }

@@ -19,7 +19,7 @@ func TestDownloadRepo(t *testing.T) {
 	path, err := DownloadRepo(&result)
 
 	if err != nil {
-		t.Fatalf("Fail in logic")
+		t.Fatalf("Fail in logic %v\n", err)
 	}
 	tests.AssertEqual(t, strings.HasSuffix(path, "test"), true)
 	os.RemoveAll(path)

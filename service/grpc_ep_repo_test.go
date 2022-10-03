@@ -69,3 +69,13 @@ func TestServer_GetRepo(t *testing.T) {
 		t.Fatalf("something is wrong, %v", err)
 	}
 }
+
+func TestServer_GetAllRepo(t *testing.T) {
+
+	models.DB = models.InitTestDB()
+	server := &Server{}
+	_, err := server.GetAllRepo(context.Background(), &proto_gen.EmptyMessage{})
+	if err != nil {
+		t.Fatalf("something is wrong, %v", err)
+	}
+}
