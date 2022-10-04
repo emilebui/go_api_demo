@@ -1,3 +1,6 @@
+# Logger Mode
+LOG_TO_FILE: false
+
 # GRPC
 GRPC_PORT: ":50051"
 GRPC_HOST: "localhost:50051"

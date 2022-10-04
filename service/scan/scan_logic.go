@@ -7,9 +7,9 @@ import (
 	"github.com/google/uuid"
 	"go_api/helpers"
 	"go_api/load_config"
+	"go_api/logger"
 	"go_api/models"
 	"go_api/proto_gen"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -54,6 +54,7 @@ func InitScanLogic(repo models.Repo) {
 	}
 
 	models.DB.Create(&result)
+	logger.LogInfo(fmt.Sprintf("Init scanning - Id %s", result.Id), "scan")
 	startScanning(&result)
 
 }
@@ -82,6 +83,7 @@ func startScanning(result *models.Result) {
 	result.FinishedAt = time.Now().Unix()
 	models.DB.Save(result)
 	os.RemoveAll(path)
+	logger.LogInfo(fmt.Sprintf("Finished Scanning - Id %s", result.Id), "scan")
 }
 
 // UpdateResultIfError Error Handler
@@ -131,7 +133,7 @@ func ScanRepo(path string, result *models.Result) error {
 				defer wg.Done()
 				err := ScanLogic(path, result)
 				if err != nil {
-					log.Fatal(err)
+					logger.LogError(err, "scan")
 				}
 			}()
 		}
@@ -163,18 +165,23 @@ func ScanLogic(path string, result *models.Result) error {
 
 		for _, val := range rules {
 			if strings.Contains(lineText, val.StringCompare) {
+
+				filePath := helpers.GetExtractedPath(result.Id, path)
 				vul := models.Vulnerability{
 					ID:       uuid.NewString(),
 					ResultID: result.Id,
 					Type:     "sast",
 					RuleID:   val.ID,
-					Path:     helpers.GetExtractedPath(result.Id, path),
+					Path:     filePath,
 					Line:     lineNum,
 				}
 				res = models.DB.Create(&vul)
 				if res.Error != nil {
 					return err
 				}
+				logger.LogInfo(fmt.Sprintf(
+					"Found Vulnerability in Repo %s - Scan ID %s - File %s - Line %d - Rule %s (%s)",
+					result.RepositoryName, result.Id, filePath, lineNum, val.ID, val.StringCompare), "scan")
 			}
 		}
 		lineNum++
@@ -192,6 +199,7 @@ func GetResults(in *proto_gen.GetScanResultReq) (*proto_gen.GetScanResultResp, e
 	var repo models.Repo
 	res := models.DB.First(&repo, "name = ?", repoName)
 	if res.Error != nil {
+		logger.LogError(res.Error, "scan")
 		return nil, res.Error
 	}
 
@@ -233,6 +241,6 @@ func GetResults(in *proto_gen.GetScanResultReq) (*proto_gen.GetScanResultResp, e
 		})
 	}
 	response.Data = resultsList
-
+	logger.LogInfo(fmt.Sprintf("Get all results from repo - %s", in.Name), "scan")
 	return &response, nil
 }

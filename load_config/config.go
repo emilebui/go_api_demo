@@ -8,6 +8,9 @@ import (
 )
 
 type Config struct {
+	// CONFIG TO LOG TO FILE OR STDOUT
+	Log2File bool `yaml:"LOG_TO_FILE"`
+
 	//GRPC
 	GrpcPort string `yaml:"GRPC_PORT"`
 
