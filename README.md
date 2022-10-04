@@ -76,6 +76,9 @@
 - **Error Message Format**
   - Provide a config to define error message format
   - Provide error message interface to return error message format from the config
+- **Logger**
+  - Provide a singleton logger module for the entire app
+  - Can be overwritten when test or config to log to file in prod env
 
 ## Working with source code
 
