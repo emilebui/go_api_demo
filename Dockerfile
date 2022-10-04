@@ -10,6 +10,7 @@ WORKDIR /opt/${app_name}
 ADD ./main.go /opt/${app_name}
 ADD ./helpers /opt/${app_name}/helpers
 ADD ./load_config /opt/${app_name}/load_config
+ADD ./logger /opt/${app_name}/logger
 ADD ./models /opt/${app_name}/models
 ADD ./proto /opt/${app_name}/proto
 ADD ./proto_gen /opt/${app_name}/proto_gen
