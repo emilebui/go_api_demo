@@ -31,6 +31,13 @@
   - https://app.swaggerhub.com/apis-docs/emilebui/go_demo/1.0.0
 - For gRPC API, checkout [**proto/demo.proto**](./proto/demo.proto) to see the API contract
 
+### Problems when running/installation
+- If you encounter some problems with sqlite during running or installation process
+  - Remove previous installed gcc package (if you use minGW)
+  - Install this library then restart your machine: https://jmeubank.github.io/tdm-gcc/
+  - If the issue isn't resolved, run the app in docker
+    - Run `docker-compose up -d`
+
 ## Project Structure
 
 - `./main.go`: to run the entire app
