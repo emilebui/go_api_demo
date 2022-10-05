@@ -45,6 +45,7 @@
 - `proto`: contains API contracts (You need to know about gRPC proto-files)
 - `proto_gen`: code that is generated from proto-files (API contract)
 - `models`: contains SQL Schema (ORM structure using GORM)
+- `logger`: contains module to provide logging functions
 - `load_config`: contains modules to load configs
 - `./config.yaml`: overall config of the app
 - `./error_messages.json`: config for error messages format
